@@ -13,30 +13,27 @@ class SAParticleSwarmOptimizer:
                  max_iter=1000,
                  w_min=0.4,
                  w_max=0.9,
+                 T=0.02,
                  c1=1.5,
                  c2=2.5,
                  visualization=True,
                  stop_value=None):
-        self.fitness_func = fitness_func
-        self.lower_b = lower_b
-        self.upper_b = upper_b
         self.N = N
         self.dim = dim
         self.max_iter = max_iter
         self.w_min = w_min
         self.w_max = w_max
-        self.c1 = c1
-        self.c2 = c2
         self.stop_value = stop_value
         self.visualization = visualization
 
         self.particle_params = {
-            "fitness_func": self.fitness_func,
+            "fitness_func": fitness_func,
             "dim": self.dim,
-            "lower_b": self.lower_b,
-            "upper_b": self.upper_b,
-            "c1": self.c1,
-            "c2": self.c2
+            "lower_b": lower_b,
+            "upper_b": upper_b,
+            "T": T,
+            "c1": c1,
+            "c2": c2
         }
 
     def __update_inertia_weight(self, best_fitness_value):
@@ -60,7 +57,9 @@ class SAParticleSwarmOptimizer:
                     best_particle.fitness_value < self.stop_value:
                 break
 
-            w = self.__update_inertia_weight(best_particle.fitness_value)
+            w = np.clip(self.__update_inertia_weight(best_particle.fitness_value),
+                        self.w_min,
+                        self.w_max)
             for particle in swarm:
                 particle.update_velocity(w, best_particle.pos)
                 particle.update_position()

@@ -6,6 +6,7 @@ class Particle:
                  dim: int,
                  lower_b: float,
                  upper_b: float,
+                 T: float,
                  c1: float,
                  c2: float
                  ):
@@ -17,6 +18,7 @@ class Particle:
 
         self.c1 = c1
         self.c2 = c2
+        self.T = T
 
         self.pos = np.random.uniform(self.lb, self.ub, self.dim)
         self.best_pos = self.pos.copy()
@@ -32,7 +34,7 @@ class Particle:
     def update_position(self):
         self.pos = np.clip(self.pos + self.velocity, self.lb, self.ub)
 
-        self.fitness_value = self.fitness_func(self.pos)
+        self.fitness_value = self.fitness_func(self.pos) * self.T
         if self.fitness_value < self.best_fitness_value:
             self.best_fitness_value = self.fitness_value
             self.best_pos = self.pos.copy()
